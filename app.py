@@ -5,7 +5,7 @@ from flask_debugtoolbar import DebugToolbarExtension
 from sqlalchemy.exc import IntegrityError
 
 from forms import UserAddForm, LoginForm, MessageForm, UserProfileForm
-from models import db, connect_db, User, Message
+from models import Likes, db, connect_db, User, Message
 
 CURR_USER_KEY = "curr_user"
 
@@ -258,6 +258,30 @@ def delete_user():
 
     return redirect("/signup")
 
+##############################################################################
+# Likes routes:
+
+@app.route('/users/add_like/<int:msg_id>', methods=["POST"])
+def like_warble(msg_id):
+    """Likes or unlikes a warble."""
+    message_liked = Message.query.get_or_404(msg_id)
+    user_likes = [m.id for m in g.user.likes]
+    
+    if message_liked.id not in user_likes:
+        g.user.likes.append(message_liked)
+        db.session.commit()
+        return redirect('/')
+    else:
+        g.user.likes.remove(message_liked)
+        db.session.commit()
+        return redirect('/')
+
+@app.route('/users/<id>/likes')
+def show_user_likes(id):
+    """Show all users likes"""
+
+    user = User.query.get_or_404(id)
+    return render_template('users/likes.html', user=user)
 
 ##############################################################################
 # Messages routes:

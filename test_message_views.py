@@ -49,10 +49,12 @@ class MessageViewTestCase(TestCase):
                                     password="testuser",
                                     image_url=None)
 
+        self.testuser_id = 7
+        self.testuser.id = self.testuser_id
         db.session.commit()
 
     def test_add_message(self):
-        """Can use add a message?"""
+        """Can logged in user add a message?"""
 
         # Since we need to change the session to mimic logging in,
         # we need to use the changing-session trick:
@@ -71,3 +73,37 @@ class MessageViewTestCase(TestCase):
 
             msg = Message.query.one()
             self.assertEqual(msg.text, "Hello")
+
+    def test_delete_message(self):
+        """Can logged in user delete a message?"""
+
+        m = Message(id=15, text="test message15", user_id=self.testuser_id)
+        db.session.add(m)
+        db.session.commit()
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = self.testuser.id
+
+            resp = c.post("/messages/15/delete", follow_redirects=True)
+            self.assertEqual(resp.status_code, 200)
+
+            m = Message.query.get(15)
+            self.assertIsNone(m)
+
+    def test_fail_delete_message(self):
+        """If not the logged in user can they delete message?"""
+
+        m = Message(id=16, text="test message16", user_id=self.testuser_id)
+        db.session.add(m)
+        db.session.commit()
+
+        with self.client as c:
+            with c.session_transaction() as sess:
+                sess[CURR_USER_KEY] = 50
+
+        resp = c.post("/messages/15/delete", follow_redirects=True)
+        self.assertEqual(resp.status_code, 200)
+        self.assertIn("Access unauthorized.", str(resp.data))
+        m = Message.query.get(16)
+        self.assertIsNotNone(m)

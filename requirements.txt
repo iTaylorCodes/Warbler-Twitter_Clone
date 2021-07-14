@@ -14,6 +14,7 @@ Flask-DebugToolbar==0.11.0
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==0.15.1
 greenlet==1.1.0
+gunicorn==20.1.0
 idna==3.2
 ipython==7.25.0
 ipython-genutils==0.2.0

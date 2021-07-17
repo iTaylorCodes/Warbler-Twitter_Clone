@@ -68,7 +68,12 @@ def signup():
     form = UserAddForm()
 
     if form.validate_on_submit():
-        try:
+
+        errors = handle_signup_errors(form.username.data, form.email.data, None)
+        if errors:
+            return render_template('users/signup.html', form=form)
+            
+        else:
             user = User.signup(
                 username=form.username.data,
                 password=form.password.data,
@@ -77,13 +82,9 @@ def signup():
             )
             db.session.commit()
 
-        except IntegrityError:
-            flash("Username already taken", 'danger')
-            return render_template('users/signup.html', form=form)
+            do_login(user)
 
-        do_login(user)
-
-        return redirect("/")
+            return redirect("/")
 
     else:
         return render_template('users/signup.html', form=form)
@@ -222,21 +223,24 @@ def profile():
     user = g.user
     form = UserProfileForm(obj=user)
     if form.validate_on_submit():
-        try:
+
+        errors = handle_signup_errors(form.username.data, form.email.data, user.id)
+        if errors:
+            return render_template('users/edit.html', form=form, user=user)
+
+        else:
             if User.authenticate(user.username,form.password.data):
                 user.username = form.username.data,
                 user.email = form.email.data,
                 user.image_url = form.image_url.data or User.image_url.default.arg,
                 user.header_image_url = form.header_image_url.data or User.header_image_url.default.arg,
                 user.bio = form.bio.data,
+
                 db.session.commit()
                 return redirect(f"/users/{user.id}")
-            
+                
             flash('Wrong password!', 'danger')
 
-        except IntegrityError:
-            flash("Username already taken", 'danger')
-            return render_template('users/edit.html', form=form)
 
     else:
         return render_template('users/edit.html', form=form, user=user)
@@ -257,6 +261,22 @@ def delete_user():
     db.session.commit()
 
     return redirect("/signup")
+
+def handle_signup_errors(username, email, id):
+    """Handles errors for signup or updating profile"""
+
+    existing_username = User.query.filter_by(username=username).one_or_none()
+    existing_email = User.query.filter_by(email=email).one_or_none()
+
+    if existing_username and existing_username.id != id:
+        flash("Username already taken, try a different username", 'danger')
+        return True
+    if existing_email and existing_email.id != id:
+        flash("Email already in use", "danger")
+        return True
+
+    else:
+        return False
 
 ##############################################################################
 # Likes routes:

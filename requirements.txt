@@ -1,3 +1,4 @@
+alembic==1.6.5
 appnope==0.1.0
 backcall==0.1.0
 bcrypt==3.2.0
@@ -11,6 +12,8 @@ Faker==8.9.0
 Flask==2.0.1
 Flask-Bcrypt==0.7.1
 Flask-DebugToolbar==0.11.0
+Flask-Migrate==3.0.1
+Flask-Script==2.0.6
 Flask-SQLAlchemy==2.5.1
 Flask-WTF==0.15.1
 greenlet==1.1.0
@@ -21,6 +24,7 @@ ipython-genutils==0.2.0
 itsdangerous==2.0.1
 jedi==0.18.0
 Jinja2==3.0.1
+Mako==1.1.4
 MarkupSafe==2.0.1
 matplotlib-inline==0.1.2
 parso==0.8.2
@@ -32,6 +36,7 @@ ptyprocess==0.7.0
 pycparser==2.19
 Pygments==2.9.0
 python-dateutil==2.8.1
+python-editor==1.0.4
 six==1.16.0
 SQLAlchemy==1.4.20
 text-unidecode==1.3

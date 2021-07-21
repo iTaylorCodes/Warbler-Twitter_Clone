@@ -1,0 +1,12 @@
+---
+language: python
+notifications:
+  email:
+    receipients:
+      - iTaylorCodes@gmail.com
+  on_failure: always
+  on_success: never
+python:
+  - "3.8.2"
+script:
+  - pytest

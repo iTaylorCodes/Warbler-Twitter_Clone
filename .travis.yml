@@ -1,12 +1,7 @@
----
 language: python
-notifications:
-  email:
-    receipients:
-      - iTaylorCodes@gmail.com
-  on_failure: always
-  on_success: never
 python:
-  - "3.8.2"
+  - "3.8"
+install:
+  - pip install -r requirements.txt
 script:
-  - pytest
+  - python3 -m unittest

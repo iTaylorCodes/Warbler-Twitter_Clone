@@ -2,7 +2,7 @@ import os
 
 from flask import Flask, render_template, request, flash, redirect, session, g
 from flask_debugtoolbar import DebugToolbarExtension
-from sqlalchemy.exc import IntegrityError
+from handlers import handle_signup_errors
 
 from forms import UserAddForm, LoginForm, MessageForm, UserProfileForm
 from models import Likes, db, connect_db, User, Message
@@ -61,7 +61,7 @@ def signup():
 
     If form not valid, present form.
 
-    If the there already is a user with that username: flash message
+    If there is already a user with that username: flash message
     and re-present form.
     """
 
@@ -114,7 +114,6 @@ def login():
 def logout():
     """Handle logout of user."""
 
-    # IMPLEMENT THIS
     do_logout()
     flash('You have been logged out')
     return redirect('/login')
@@ -215,7 +214,6 @@ def stop_following(follow_id):
 def profile():
     """Update profile for current user."""
 
-    # IMPLEMENT THIS
     if not g.user:
         flash("Access unauthorized.", "danger")
         return redirect("/")
@@ -246,7 +244,6 @@ def profile():
         return render_template('users/edit.html', form=form, user=user)
 
 
-
 @app.route('/users/delete', methods=["POST"])
 def delete_user():
     """Delete user."""
@@ -262,21 +259,6 @@ def delete_user():
 
     return redirect("/signup")
 
-def handle_signup_errors(username, email, id):
-    """Handles errors for signup or updating profile"""
-
-    existing_username = User.query.filter_by(username=username).one_or_none()
-    existing_email = User.query.filter_by(email=email).one_or_none()
-
-    if existing_username and existing_username.id != id:
-        flash("Username already taken, try a different username", 'danger')
-        return True
-    if existing_email and existing_email.id != id:
-        flash("Email already in use", "danger")
-        return True
-
-    else:
-        return False
 
 ##############################################################################
 # Likes routes:

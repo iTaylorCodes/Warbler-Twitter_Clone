@@ -1,3 +1,3 @@
 /venv
-/test_message_model.py
-/test_message_views.py
+test_message_model.py
+test_message_views.py

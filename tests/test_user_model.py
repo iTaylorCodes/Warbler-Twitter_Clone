@@ -15,7 +15,7 @@ from models import db, User, Message, Follows
 # before we import our app, since that will have already
 # connected to the database
 
-os.environ['DATABASE_URL'] = "postgresql:///warbler-test"
+os.environ['DATABASE_URL'] = "postgresql:///warbler_test"
 
 
 # Now we can import app
@@ -54,10 +54,10 @@ class UserModelTestCase(TestCase):
 
         self.client = app.test_client()
 
-    def teardown(self):
+    def tearDown(self):
         """Runs after every test"""
 
-        res = super().teardown()
+        res = super().tearDown()
         db.session.rollback()
         return res
 
@@ -81,7 +81,7 @@ class UserModelTestCase(TestCase):
     def test_user_repr(self):
         """Does the repr display what is expected?"""
 
-        self.assertEqual(repr(self.u1), f"<User #1: testuser1, test1@test.com>")
+        self.assertEqual(repr(self.u1), "<User #1: testuser1, test1@test.com>")
 
     def test_user_is_following(self):
         """Does is_following detect if user1 is following user2 or not?"""
@@ -122,4 +122,3 @@ class UserModelTestCase(TestCase):
         self.assertTrue(User.authenticate("testuser1", "HASHED_PASSWORD1"))
         self.assertFalse(User.authenticate("nottestuser1", "HASHED_PASSWORD1"))
         self.assertFalse(User.authenticate("testuser1", "wrong_password"))
-

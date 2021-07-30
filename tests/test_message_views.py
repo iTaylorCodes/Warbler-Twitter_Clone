@@ -15,7 +15,7 @@ from models import db, connect_db, Message, User
 # before we import our app, since that will have already
 # connected to the database
 
-os.environ['DATABASE_URL'] = "postgresql:///warbler-test"
+os.environ['DATABASE_URL'] = "postgresql:///warbler_test"
 
 
 # Now we can import app
@@ -52,6 +52,13 @@ class MessageViewTestCase(TestCase):
         self.testuser_id = 7
         self.testuser.id = self.testuser_id
         db.session.commit()
+
+    def tearDown(self):
+        """Runs after every test"""
+
+        res = super().tearDown()
+        db.session.rollback()
+        return res
 
     def test_add_message(self):
         """Can logged in user add a message?"""

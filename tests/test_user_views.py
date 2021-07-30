@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from models import db, connect_db, Message, User, Likes, Follows
 
-os.environ["DATABASE_URL"] = "postgresql:///warbler-test"
+os.environ["DATABASE_URL"] = "postgresql:///warbler_test"
 
 from app import app, CURR_USER_KEY
 
@@ -33,7 +33,7 @@ class UserViewTestCase(TestCase):
         self.u2.id = self.uid2
         db.session.commit()
 
-    def teardown(self):
+    def tearDown(self):
         resp = super().tearDown()
         db.session.rollback()
         return resp

@@ -3,7 +3,7 @@ from unittest import TestCase
 
 from models import db, User, Message, Follows, Likes
 
-os.environ['DATABASE_URL'] = "postgresql:///warbler-test"
+os.environ['DATABASE_URL'] = "postgresql:///warbler_test"
 
 from app import app
 
@@ -30,10 +30,10 @@ class MessageModelTestCase(TestCase):
 
         self.client = app.test_client()
 
-    def teardown(self):
+    def tearDown(self):
         """Runs after every test"""
 
-        res = super().teardown()
+        res = super().tearDown()
         db.session.rollback()
         return res
 

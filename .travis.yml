@@ -3,5 +3,12 @@ python:
   - "3.8"
 install:
   - pip install -r requirements.txt
+services:
+  - postgresql
+before_script:
+  - psql -c 'create database warbler_test;' -U postgres
 script:
-  - python3 -m unittest
+  - python3 -m unittest discover tests
+  - coverage run -m unittest discover tests
+after_success:
+  - coveralls

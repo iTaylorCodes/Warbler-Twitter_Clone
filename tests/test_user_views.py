@@ -95,5 +95,4 @@ class UserViewTestCase(TestCase):
 
             resp = c.post("/users/stop-following/11", follow_redirects=True)
             html = resp.get_data(as_text=True)
-            html = resp.get_data(as_text=True)
             self.assertNotIn("@testuser2", html)
